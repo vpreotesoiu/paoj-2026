@@ -1,5 +1,14 @@
 package com.pao.laboratory03.bonus;
 
+import com.pao.laboratory03.bonus.exception.InvalidTransitionException;
+import com.pao.laboratory03.bonus.model.Priority;
+import com.pao.laboratory03.bonus.model.Status;
+import com.pao.laboratory03.bonus.model.Task;
+import com.pao.laboratory03.bonus.service.TaskService;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  * Exercițiul 5 (Bonus) — Sistem de gestiune task-uri cu audit log
  *
@@ -158,6 +167,58 @@ public class Main {
         // TODO: implementează toți cei 10 pași de mai sus
         // Creează TOATE clasele necesare în acest pachet (bonus/)
         // Nu ai subpachete impuse — organizează cum consideri
+        TaskService ts = TaskService.getInstance();
+        // sa zicem ca este un restaurant
+        // adaugare 5 taskuri
+        System.out.println("=== Adaugare task-uri===");
+        ts.addTask("Pregateste chiflele", Priority.MEDIUM);
+        ts.addTask("Cumpara ketchup", Priority.HIGH);
+        ts.addTask("Schimba uleiul", Priority.LOW);
+        ts.addTask("Repara cuptorul", Priority.CRITICAL);
+        ts.addTask("Spala vasele", Priority.MEDIUM);
+        // asignare 3 taskuri
+        System.out.println("=== Asignare ===");
+        ts.assignTask("T0001", "Andrei");
+        ts.assignTask("T0002", "George");
+        ts.assignTask("T0003", "Maria");
+        // schimbare status taskuri
+        System.out.println("=== Schimbari status ===");
+        ts.changeStatus("T0001", Status.IN_PROGRESS);
+        // try catch pt tranzitie invalida
+        try {
+            ts.changeStatus("T0001", Status.DONE);
+        } catch (InvalidTransitionException e) {
+            System.out.println("Am prins exceptia de tranzitionare invalida!");
+        }
+        ts.changeStatus("T0002", Status.IN_PROGRESS);
+        ts.changeStatus("T0003", Status.CANCELLED);
+        // afiseaza task-urile de prioritate high
+        List<Task> tasks = ts.getTasksByPriority(Priority.HIGH);
+        System.out.println("=== Task-uri HIGH ===");
+        for (Task t : tasks) {
+            System.out.println(t);
+        }
+        // afiseaza sumar pe status
+        System.out.println("=== Sumar status ===");
+        Map<Status, Long> statusSummary = ts.getStatusSummary();
+        for (Map.Entry<Status, Long> elem : statusSummary.entrySet()) {
+            Status s = elem.getKey();
+            Long v = elem.getValue();
+            System.out.println(s.name() + ": " + v);
+        }
+        // afiseaza task-uri neasignate
+        System.out.println("=== Task-uri neasignate ===");
+        List<Task> unassignedTasks = ts.getUnassignedTasks();
+        for (Task t : unassignedTasks) {
+            System.out.println(t.getId() + ": " + t.getTitle());
+        }
+        // calculeaza scor de urgenta total
+        System.out.println("=== Scor urgenta (baseDays=5) ===");
+        System.out.println("Total: " + ts.getTotalUrgencyScore(5));
+        // audit log
+        ts.printAuditLog();
+        // trigger la exceptii
+        // ts.assignTask("T999", "Gigel");
     }
 }
 
