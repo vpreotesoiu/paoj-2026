@@ -4,6 +4,11 @@ Materiale și resurse pentru cursul **Programare Avansată pe Obiecte în Java**
 
 ---
 
+## Proiect
+
+📁 **[Cerințe proiect individual](src/com/pao/project/README.md)** — Etapa I (24 apr) · Etapa II (5 iun)
+
+
 ## Laboratoare
 
 | Laborator                                          | Subiect                                                          |
@@ -16,23 +21,24 @@ Materiale și resurse pentru cursul **Programare Avansată pe Obiecte în Java**
 | [laboratory06](src/com/pao/laboratory06/Readme.md) | Interfețe și clase — studiu detaliat (Comparable, Comparator, callback, extindere) |
 | [laboratory07](src/com/pao/laboratory07/Readme.md) | Sealed classes și enum-uri — concepte avansate                    |
 
-📁 **[Cerințe proiect individual](src/com/pao/project/README.md)** — Etapa I (24 apr) · Etapa II (5 iun)
+- `laboratory06` va acoperi în profunzime interfețele Java și utilizarea lor împreună cu clase (design, best practices, patternuri simple).
+- `laboratory07` va introduce construcțiile mai noi din limbaj: `sealed` classes și un studiu mai aprofundat al `enum`-urilor.
 
 Începând cu **laboratory04**, soluțiile se trimit pe GitHub la un fork personal al acestui repo.
-**Data limită:** vineri, ora 23:59, în fiecare săptămână.
-
-Mai jos găsești:
-
-1. [Cum trimiți soluțiile](#1-cum-trimiți-soluțiile) — fork, configurare remotes, commit săptămânal
-2. [Formularul de înregistrare](#2-completați-url-ul-fork-ului) — link fork personal
-3. [Punctarea laboratoarelor](#3-punctarea-laboratoarelor) — prezență, obligatoriu, bonus
+**Data limită:** vineri, ora 23:59, în fiecare săptămână. Mai multe detalii doua sectiuni mai jos (TODO adauga link)
 
 ---
 
-### TODO NEW: sectiunea despre testarea automata
+### TODO NOUTATE laboratory06-laboratory14: verificarea automata a calculelor din exercițiile obligatorii
 
-You have a jar under src/com/pao/test/utils: [java-diff-utils-4.15.jar](src/com/pao/test/utils/java-diff-utils-4.15.jar)
-Steps to load it:
+You have a jar in the root folder, under ./utils:
+
+[java-diff-utils-4.15.jar](src/com/pao/test/utils/java-diff-utils-4.15.jar)
+
+A .jar file si like an archive of an library, in this case com.github.difflib.
+
+Steps needed to run the tests:
+
 
 1. In IntelliJ
    
@@ -61,6 +67,7 @@ Steps to load it:
         ]
     }
     ```
+   >  TODO !!! inca lucrez pentru a gasi o solutie clara pentru VS Code.
 
 
 3. How to run in terminal?
@@ -75,15 +82,20 @@ Steps to load it:
 
     # (On macOS/Linux, replace ';' with ':')
 
-
-### Notă scurtă
-
-- `laboratory06` va acoperi în profunzime interfețele Java și utilizarea lor împreună cu clase (design, best practices, patternuri simple). 
-- `laboratory07` va introduce construcțiile mai noi din limbaj: `sealed` classes și un studiu mai aprofundat al `enum`-urilor.
-
 ---
+## Revenind la trimiterea solutiilor
 
-### Pre-rechizite (pentru trimiterea soluțiilor)
+
+Mai jos găsești:
+
+0. Ce sa aveti deja instalat (TODO adauga link)
+1. [Cum trimiți soluțiile](#1-cum-trimiți-soluțiile) — fork, configurare remotes, commit săptămânal
+2. [Formularul de înregistrare](#2-completați-url-ul-fork-ului) — link fork personal
+3. [Punctarea laboratoarelor](#3-punctarea-laboratoarelor) — prezență, obligatoriu, bonus
+
+
+
+### 0. Ce sa aveti deja instalat pe calculatoare
 
 - ✅ Cont pe [github.com](https://github.com) (gratuit)
 - ✅ Git instalat — verifică cu `git --version` ([descarcă de aici](https://git-scm.com/downloads) dacă nu ai)
@@ -92,16 +104,16 @@ Steps to load it:
 Dacă vrei să te conectezi ușor la GitHub din terminal, recomand să instalezi și
 configurezi [GitHub CLI](https://cli.github.com/):
 
-După aceea, scrii
+După aceea, scrieti:
 
 ```bash
 gh auth login
 ```
 
-Apeși Enter, Enter, Y, Enter, Enter, și te autentifici în browser.
+Apasati Enter, Enter, Y, Enter, Enter, și te autentifici în browser.
 După ce te întorci în terminal, ar trebui să vezi mesajul "Logged in to github.com as USERNAME".
 
-## 1. Cum trimiți soluțiile
+### 1. Cum trimiți soluțiile
 
 > 🎬 **Video tutorial:**
 >
@@ -116,7 +128,7 @@ După ce te întorci în terminal, ar trebui să vezi mesajul "Logged in to gith
 
 ---
 
-### Partea 1 - Configurare inițială (o singură dată)
+#### Partea 1 - Configurare inițială (o singură dată)
 
 **1. Salvează-ți munca curentă (dacă ai folosit Git)**
 
@@ -174,7 +186,7 @@ git remote -v
 
 ✅ **Gata!** Ai acum un repo local conectat la două remote-uri: `origin` (fork-ul tău) și `upstream` (repo-ul cursului).
 
-### Partea 2 - Flux săptămânal
+#### Partea 2 - Flux săptămânal
 
 **1. Preiei branch-ul nou de pe `upstream`:**
 
@@ -200,202 +212,52 @@ git commit -m "LabX: exercitiile 1-4 completate"
 git push origin labX
 ```
 
-## 2. Completați URL-ul fork-ului
+### 2. Completați URL-ul fork-ului
 
 Trimite link-ul fork-ului pe formularul următor, ca să știm cui oferim punctajul:
 
 [PAOJ 2026 - Alegerea proiectului si Incarcarea activitatii](https://forms.gle/zKPvTiP3oTJrxhR19)
 
-## 3. Punctarea laboratoarelor
+### 3. Punctarea laboratoarelor
 
-### Structura notei finale
+#### Structura notei finale
 
-| Componentă                                                                     | Pondere |
-|--------------------------------------------------------------------------------|---------|
-| Laboratoare (12 din 14 fara bonus, 10 sau 11 cu bonus)                         | 25%     |
-| Proiect individual (puteti folosi bonusul acumulat la laboratoare, maxim 4.8%) | 25%     |
-| Examen                                                                         | 50%      |
+| Componentă              | Pondere |
+|-------------------------|---------|
+| Proiect individual      | 50%     |
+| Laboratoare (10 din 14) | 25%     |
+| Activitate și prezență  | 25%     |
 
-### Prezență
+#### Prezență
 
 - **10 prezențe obligatorii** din 14 laboratoare
 - Laburile 1–3 sunt punctate pentru prezență + soluție completă
 - La Lab 04, exercițiul bonus era opțional — absența lui nu scade punctajul
 
-### Laboratoarele 4–14
+#### Laboratoarele 4–14
 
-Fiecare laborator valorează **~2.08%** din nota finală (25% ÷ 12 laboratoare):
+Fiecare laborator valorează **2.5%** din nota finală:
 
-| Ce rezolvi                                  | Punctaj                   |
-|---------------------------------------------|---------------------------|
-| Prezență + exerciții obligatorii (Ex 1+2+3) | ~2.08%                    |
-| Exercițiul bonus (Ex 4)                     | +0.4% → bonus lab+proiect |
-
-**Excepții:** Laboratory 08 (Proiect Partea 1) și Laboratory 13 (Proiect Final) valorează **~2.08%**, fără exercițiu
-bonus — efortul de proiect le înlocuiește.
-
-### Cum obții 25% din laboratoare
-
-Rezolvând **12 laboratoare** (exercițiile obligatorii Ex 1+2+3) obții **25% maxim** — acesta este plafonul:
-
-| Laboratoare rezolvate | Rezultat laborator                                                     |
-|-----------------------|------------------------------------------------------------------------|
-| 12 lab-uri            | 12 × 2.08% = **25%** ✅                                                 |
-| 10 lab-uri            | 10 × 2.08% = **~20.8%** *dar, daca obții 10 bonusuri, rotunjim la 25%* |
-| Minimul = 8 lab-uri   | 8 × 2.08% = **~16.6%**                                                 |
-
-### 🎯 Bonus (până la +4.8%) — adăugat la scorul combinat laborator + proiect
-
-Exercițiul bonus (Ex 4) nu adaugă la nota de laborator (plafonată la 25%), ci se acumulează ca
-**bonus la scorul combinat laboratoare + proiect (max 50%)**, compensând lipsa rotunjirii.
-
-| Exerciții bonus rezolvate | Bonus adăugat la lab+proiect |
-|---------------------------|----------------------------|
-| 1 bonus                   | +0.4%                      |
-| 5 bonusuri                | +2%                        |
-| 12 bonusuri               | +4.8% ✅ (maxim)            |
-
-> **Exemplu:** laboratoare = 25/25, proiect = 21/25 → combinat = 46/50.
-> Ai rezolvat 11 bonusuri (= +4%) → scor final combinat = **50/50** (plafonat la maxim, chiar daca suma este 50.8%).
-
-Bonusurile se adaugă la scorul combinat laboratoare + proiect, **plafonat la 50%**.
-
-> **De ce?** Scorul combinat laboratoare + proiect (50%) nu se rotunjește. Bonusurile compensează
-> fracțiunile pierdute și recompensează efortul suplimentar.
-
-### 🎁 Bonus prezență — la fiecare 5 bonusuri
-
-Fiecare **5 exerciții bonus** rezolvate corect echivalează cu **o prezență extra** la laborator.
-
-Astfel, poți obține maximul de 25% la laboratoare predând soluții la doar **10 laboratoare**
-(în loc de 12), dacă compensezi cu bonusuri:
-
-| Laboratoare predate | Bonusuri rezolvate | Prezențe extra |
-|---------------------|--------------------|----------------|
-| 12                  | 0                  | 0              |
-| 11                  | 5                  | 1              |
-| 10                  | 10                 | 2              |
-
-> **Exemplu:** Predai 10 laboratoare și rezolvi toate cele 10 bonusuri disponibile → +2 prezențe extra
-> → echivalent cu 12 laboratoare → **25% maxim** la laboratoare.
-
----
-
-## Cum trimiți soluțiile (începând cu laboratory04)
-
-[//]: # (> 🎬 **Video tutorial:** [Cum faci fork și trimiți soluțiile — YouTube]&#40;https://www.youtube.com/watch?v=PLACEHOLDER&#41;)
-
-### Pentru laboratoarele online din saptamanile 4-14
+| Ce rezolvi                       | Punctaj                   |
+|----------------------------------|---------------------------|
+| Prezență + exerciții obligatorii | 2.08(3)% (practic 25%/12) |
+| Exercițiul bonus                 | 0.4%                      |
 
 #### Prezenta
 
 -> se deduce din submit-ul saptamanal, plus prezentarea o data la 2 saptamani a ce ati lucrat (online/fizic)
 
-#### Punctajul
+#### Punctajul (TODO sa revin cu rezumat la fiecare saptamana in parte)
 
--> in laboratoarele 4-14 aveti si exercitii bonus (Ex 4), care adauga pana la **5% bonus la scorul combinat
-laborator+proiect** (0.5% per bonus rezolvat, plafonat la 50%).
-In plus, la fiecare **5 bonusuri** rezolvate primiti o **prezenta extra**, deci puteti preda solutii la 10 laboratoare (
-in loc de 12) si totusi sa obtineti maximul.
+-> in laboratoarele 4-14 aveti si exercitii bonus, care valoreaza 2.5% din punctajul total al prezentei+activitate.
 
-Reminder:
-
-- Laboratoare -> 25%, obtinuti prin rezolvarea a 12 laboratoare (Ex 1+2+3), fiecare valorand ~2.08%.
-- Bonusurile (Ex 4) nu adauga la nota de laborator, ci la scorul combinat lab+proiect (max +5%, plafonat la 50%).
-- La fiecare 5 bonusuri = 1 prezenta extra (deci 10 labs + 10 bonusuri = echivalent 12 labs = 25% max la laborator).
-- Proiect -> 25%.
-
-### Ce unelte să instalezi înainte de pașii de mai jos
-
-- ✅ Cont pe [github.com](https://github.com) (gratuit)
-- ✅ Git instalat — `git --version` în terminal ([descarcă de aici](https://git-scm.com/downloads) dacă nu ai)
-- ✅ Autentificare configurată — recomand [GitHub CLI](https://cli.github.com/) (`gh auth login`) sau SSH key
-
+<br />
+<br />
 ---
-
-**1. Fork** — creează-ți propria copie a repo-ului:
-
-- Deschide repo-ul cursului pe GitHub
-- Click **Fork** (dreapta sus) → **Create fork**
-- Acum ai `https://github.com/USERNAME-UL-TAU/paoj-2026`
-
-**2. Schimbi `origin` să pointeze spre fork-ul tău:**
-
-```bash
-cd C:\Users\stefan\path\to\paoj-2026  # sau unde ai tu clona locală
-git remote rename origin upstream
-git remote add origin https://github.com/USERNAME-UL-TAU/paoj-2026.git
-```
-
-**3. Push-ul inițial către fork:**
-
-```bash
-git push -u origin main
-```
-
-**4. Verifică:**
-
-```bash
-git remote -v
-# origin    https://github.com/USERNAME-UL-TAU/paoj-2026.git          (fork-ul tău)
-# upstream  https://github.com/stefaneduard-deaconu/paoj-2026.git    (repo-ul cursului)
-```
-
-✅ **Gata!** Acum ai aceeași configurație ca cei care încep de la zero.
-
+Urmatoare sectiune contine doar intrebari adresate de voi ca studenti, si raspunsurile pe care le-ati gasit sau le-am gasit impreuna.
 ---
-
-### 🆕 VARIANTA B — Începi acum (studenți noi)
-
-**1. Fork + clone:**
-
-- Deschide [https://github.com/stefaneduard-deaconu/paoj-2026](https://github.com/stefaneduard-deaconu/paoj-2026)
-- Click **Fork** → **Create fork**
-- Clonează fork-ul tău:
-
-```bash
-git clone https://github.com/USERNAME-UL-TAU/paoj-2026.git
-cd paoj-2026
-```
-
-**2. Adaugă repo-ul cursului ca `upstream`:**
-
-```bash
-git remote add upstream https://github.com/stefaneduard-deaconu/paoj-2026.git
-```
-
-**3. Verifică:**
-
-```bash
-git remote -v
-# origin    https://github.com/USERNAME-UL-TAU/paoj-2026.git          (fork-ul tău)
-# upstream  https://github.com/stefaneduard-deaconu/paoj-2026.git    (repo-ul cursului)
-```
-
----
-
-### 📅 Flux săptămânal (pentru TOȚI studenții)
-
-**1. Actualizează** cu materialele noi de la curs:
-
-```bash
-git fetch upstream labX  # e.g. lab5 for laboratory04 of March 23-24th
-git checkout labX        # e.g. lab5 for laboratory04 of March 23-24th
-```
-
-**2. Lucrează** la exerciții — creează clase, completează TODO-uri.
-
-**3. Salvează** progresul:
-
-```bash
-git add .
-git commit -m "Lab5: exercitiile 1-4 completate"
-git push origin labX  # origin is your fork.
-```
-
-**4. Submit** — link către fork-ul tău pe platforma de curs.
-
----
+<br />
+<br />
 
 ## Întrebări frecvente (FAQ)
 

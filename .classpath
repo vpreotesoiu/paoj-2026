@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src"/>
+    <classpathentry kind="lib" path="lib/java-diff-utils-4.15.jar"/>
+    <classpathentry kind="output" path="output"/>
+</classpath>
