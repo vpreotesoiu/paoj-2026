@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class PFAColaborator extends Colaborator {
     private double cheltuieliLunare;
 
-    public PFAColaborator() {}
+    public PFAColaborator() {setTipColaborator(TipColaborator.PFA);}
     PFAColaborator(String nume, String prenume, double venitBrutLunar, double cheltuieliLunare) {
         super(nume, prenume, venitBrutLunar, TipColaborator.PFA);
         this.cheltuieliLunare = cheltuieliLunare;
@@ -43,8 +43,8 @@ public class PFAColaborator extends Colaborator {
     }
     @Override
     public void citeste(Scanner in) {
-        String nume = in.nextLine();
-        String prenume = in.nextLine();
+        String nume = in.next();
+        String prenume = in.next();
         double venitBrutLunar = in.nextDouble();
         double cheltuieliLunare = in.nextDouble();
         setNume(nume);

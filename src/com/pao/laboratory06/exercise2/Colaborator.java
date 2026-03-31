@@ -23,6 +23,9 @@ public abstract class Colaborator implements IOperatiiCitireScriere {
     public double getVenitBrutLunar() {
         return venitBrutLunar;
     }
+    public Persoana getTipPersoana() {
+        return tipColaborator.getPersoana();
+    }
 
     public void setNume(String nume) {
         this.nume = nume;
@@ -33,6 +36,9 @@ public abstract class Colaborator implements IOperatiiCitireScriere {
     public void setVenitBrutLunar(double venitBrutLunar) {
         this.venitBrutLunar = venitBrutLunar;
     }
+    public void setTipColaborator(TipColaborator tipColaborator) {
+        this.tipColaborator = tipColaborator;
+    }
     abstract double calculeazaVenitAnual();
     @Override
     public String tipContract() {
@@ -40,7 +46,7 @@ public abstract class Colaborator implements IOperatiiCitireScriere {
     }
     @Override
     public void afiseaza() {
-        System.out.println(tipContract() + ": " + getNume() + " " + getPrenume() + ", venit net anual: " + calculeazaVenitAnual());
+        System.out.print(tipContract() + ": " + getNume() + " " + getPrenume() + ", venit net anual: " + calculeazaVenitAnual());
     }
 };
 

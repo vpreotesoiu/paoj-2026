@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class CIMColaborator extends Colaborator {
     private boolean bonus = false;
-    public CIMColaborator() {}
+    public CIMColaborator() { setTipColaborator(TipColaborator.CIM);}
     public CIMColaborator(String nume, String prenume, double venitBrutLunar) {
         super(nume, prenume, venitBrutLunar, TipColaborator.CIM);
     }

@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class SRLColaborator extends Colaborator {
     private double cheltuieliLunare;
 
-    public SRLColaborator() {}
+    public SRLColaborator() {setTipColaborator(TipColaborator.SRL);}
     SRLColaborator(String nume, String prenume, double venitBrutLunar, double cheltuieliLunare) {
         super(nume, prenume, venitBrutLunar, TipColaborator.SRL);
         this.cheltuieliLunare = cheltuieliLunare;
@@ -18,8 +18,8 @@ public class SRLColaborator extends Colaborator {
 
     @Override
     public void citeste(Scanner in) {
-        String nume = in.nextLine();
-        String prenume = in.nextLine();
+        String nume = in.next();
+        String prenume = in.next();
         double venitBrutLunar = in.nextDouble();
         double cheltuieliLunare = in.nextDouble();
         setNume(nume);
