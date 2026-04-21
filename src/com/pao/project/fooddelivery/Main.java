@@ -89,7 +89,10 @@ public class Main {
         while (inMeniu) {
             System.out.println("----- Meniu Sofer -----");
             System.out.println("1. Afiseaza comenzi disponibile");
-            System.out.println("2. Iesire");
+            System.out.println("2. Preia comanda");
+            System.out.println("3. Finalizeaza livrare");
+            System.out.println("4. Afiseaza datele tale de sofer");
+            System.out.println("5. Iesire");
             System.out.print("Alege optiune: ");
 
             int optiune = Integer.parseInt(scanner.nextLine());
@@ -97,11 +100,20 @@ public class Main {
                 afiseazaComenziDisponibile();
             }
             else if (optiune == 2) {
+                preiaComanda();
+            }
+            else if (optiune == 3) {
+                finalizeazaLivrare();
+            }
+            else if (optiune == 4) {
+                afiseazaDateSofer();
+            }
+            else if (optiune == 5) {
                 soferCrt = null;
                 inMeniu = false;
             }
             else {
-                System.out.println("Optiune invalida! Alege intre 1,2");
+                System.out.println("Optiune invalida! Alege intre 1..5");
             }
         }
     }
@@ -145,7 +157,7 @@ public class Main {
                 afiseazaCos();
             }
             else if (optiune == 5) {
-                stergeProdusDinCos();
+                stergeProduseDinCos();
             }
             else if (optiune == 6) {
                 golesteCos();
@@ -377,97 +389,6 @@ public class Main {
         }
     }
 
-    private static void checkout() {
-        try {
-            if (cosService.esteGol(clientCrt)) {
-                System.out.println("Cosul este gol, deci nu se poate face checkout!");
-                return;
-            }
-
-            System.out.print("Introdu numele restaurantului: ");
-            String nume = scanner.nextLine();
-            Restaurant r = restaurantService.cautaDupaNume(nume);
-            List<Adresa> adrese = new ArrayList<Adresa>(clientCrt.getAdrese());
-            if (adrese.isEmpty()) {
-                System.out.println("Clientul nu are adrese salvate.");
-            }
-
-            System.out.println("\n----- Adresele tale -----");
-            for (int i = 0; i < adrese.size(); ++i) {
-                System.out.println((i+1) + ". " + adrese.get(i));
-            }
-
-            System.out.print("Alege adresa ta de livrare: ");
-            int i = Integer.parseInt(scanner.nextLine());
-
-            if (i < 1 || i > adrese.size()) {
-                System.out.println("Indicele pentru adresa este invalid!");
-                return;
-            }
-
-            Adresa adr = adrese.get(i-1);
-
-            System.out.println("\n----- Metoda de plata -----");
-            System.out.println("1. Card");
-            System.out.println("2. Cash");
-            System.out.print("Alege metoda de plata: ");
-            int optPlata = Integer.parseInt(scanner.nextLine());
-
-            MetodaPlata mp;
-
-            if (optPlata == 1) {
-                mp = MetodaPlata.CARD;
-            }
-            else if (optPlata == 2){
-                mp = MetodaPlata.CASH;
-            }
-            else {
-                System.out.println("Optiune invalida!");
-                return;
-            }
-
-            CardBancar cb = null;
-
-            if (mp == MetodaPlata.CARD) {
-                List<CardBancar> carduri = new ArrayList<CardBancar>(clientCrt.getCarduri());
-                if (carduri.isEmpty()) {
-                    System.out.println("Nu aveti carduri salvate...");
-                    return;
-                }
-                System.out.println("\n----- Cardurile dvs. -----");
-                for (int j = 0; j < carduri.size(); ++j) {
-                    System.out.println((j+1) + ". " + carduri.get(j));
-                }
-                System.out.print("Alege cardul: ");
-                int k = Integer.parseInt(scanner.nextLine());
-
-                if (k < 1 || k > carduri.size()) {
-                    System.out.println("Indicele ales pt card este invalid!");
-                    return;
-                }
-
-                cb = carduri.get(k-1);
-            }
-
-            double total = comandaService.calculeazaCheckout(clientCrt, r, mp);
-            System.out.println("Total plata:" + total);
-            System.out.print("Confirmi comanda? (da sau nu): ");
-            String conf = scanner.nextLine();
-
-            if (!conf.equalsIgnoreCase("da")) {
-                System.out.println("Checkout-ul a fost anulat!");
-                return;
-            }
-
-            Comanda c = comandaService.checkout(clientCrt, r, adr, mp, cb);
-            System.out.println("Comanda a fost plasata cu succes!");
-            System.out.println(c);
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
     private static void afiseazaIstoricComenzi() {
         try {
             List<Comanda> ist = comandaService.getIstoricClient(clientCrt);
@@ -485,6 +406,514 @@ public class Main {
             System.out.println(e.getMessage());
         }
     }
+
+    private static void adaugaAdresaClient() {
+        System.out.print("Strada: ");
+        String strada = scanner.nextLine();
+        System.out.print("Numar: ");
+        int nr = Integer.parseInt(scanner.nextLine());
+        System.out.print("Oras: ");
+        String oras = scanner.nextLine();
+        System.out.print("Cod postal: ");
+        String codPostal = scanner.nextLine();
+
+        try {
+            Adresa adr = new Adresa(strada, nr, oras, codPostal);
+            clientCrt.adaugaAdresa(adr);
+            System.out.println("Adresa a fost adaugata cu succes!");
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void stergeAdresaClient() {
+        List<Adresa> adrs = new ArrayList<Adresa>(clientCrt.getAdrese());
+        if (adrs.isEmpty()) {
+            System.out.println("Clientul nu are adrese salvate!");
+            return;
+        }
+
+        System.out.println("----- Adresele dvs. -----");
+        for (int i = 0; i < adrs.size(); ++i) {
+            System.out.println((i+1) + ". " + adrs.get(i));
+        }
+
+        System.out.print("Alege adresa de sters dupa nr.: ");
+        int i = Integer.parseInt(scanner.nextLine());
+
+        if (i < 1 || i > adrs.size()) {
+            System.out.println("Nu exista o adresa cu acest indice! Incearca altul!");
+            return;
+        }
+
+        Adresa adr = adrs.get(i-1);
+        clientCrt.stergeAdresa(adr);
+
+        System.out.println("Adresa a fost stearsa cu succes!");
+    }
+
+    private static void adaugaCardClient() {
+        System.out.print("Numar card (stai linistit, e secret >:) ): ");
+        String numarCard = scanner.nextLine();
+
+        System.out.print("Balanta initiala: ");
+        double bal = Double.parseDouble(scanner.nextLine());
+
+        try {
+            CardBancar cb = new CardBancar(numarCard);
+            if (bal > 0) {
+                cb.topUp(bal);
+            }
+
+            clientCrt.adaugaCard(cb);
+
+            System.out.println("Cardul a fost adaugat cu succes!");
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void stergeCardClient() {
+        List<CardBancar> cbs = new ArrayList<CardBancar>(clientCrt.getCarduri());
+
+        if (cbs.isEmpty()) {
+            System.out.println("Clientul nu are carduri salvate...");
+            return;
+        }
+
+        System.out.println("\n----- Cardurile tale -----");
+        for (int i = 0; i < cbs.size(); ++i) {
+            System.out.println((i+1) + ". " + cbs.get(i));
+        }
+
+        System.out.print("Alege cardul de sters (dupa indice): ");
+        int i = Integer.parseInt(scanner.nextLine());
+        if (i < 1 || i > cbs.size()) {
+            System.out.println("Acest indice este invalid!");
+            return;
+        }
+
+        CardBancar cb = cbs.get(i-1);
+        clientCrt.stergeCard(cb);
+
+        System.out.println("Cardul a fost sters cu succes!");
+    }
+
+    private static void adaugaRestaurantFavorit() {
+        List<Restaurant> rs = restaurantService.getRestaurante();
+
+        if (rs.isEmpty()) {
+            System.out.println("Nu exista restaurante in sistem.");
+            return;
+        }
+
+        System.out.println("\n----- Restaurante disponibile -----");
+        for (int i = 0; i < rs.size(); ++i) {
+            System.out.println((i+1) + ". " + rs.get(i));
+        }
+        System.out.print("Alege restaurantul de adaugat la favorite dupa numar: ");
+        int i = Integer.parseInt(scanner.nextLine());
+        if (i < 1 || i > rs.size()) {
+            System.out.println("Acest indice este invalid!");
+            return;
+        }
+
+        Restaurant r = rs.get(i-1);
+        clientCrt.adaugaRestaurantFavorit(r);
+        System.out.println("Restaurantul a fost adaugat la favorite cu succes!");
+    }
+
+    private static void stergeRestaurantFavorit() {
+        List<Restaurant> rsFav = new ArrayList<Restaurant>(clientCrt.getRestauranteFavorite());
+        if (rsFav.isEmpty()) {
+            System.out.println("Clientul nu are restaurante favorite.");
+            return;
+        }
+
+        System.out.println("\n----- Restaurante fav.-----");
+        for (int i = 0; i < rsFav.size(); ++i) {
+            System.out.println((i+1) + ". " + rsFav.get(i));
+        }
+
+        System.out.print("Alege restaurant de sters de la fav. dupa numar: ");
+        int i = Integer.parseInt(scanner.nextLine());
+        if (i < 1 || i>rsFav.size()) {
+            System.out.println("Acest indice este invalid!");
+            return;
+        }
+
+        Restaurant r = rsFav.get(i-1);
+        clientCrt.stergeFavorit(r);
+
+        System.out.println("Restaurantul a fost sters de la favorite cu succes!");
+    }
+
+    private static void afiseazaDateClient() {
+        System.out.println("\n----- Date cont client -----");
+        System.out.println("Nume: " + clientCrt.getNume());
+        System.out.println("Email: " + clientCrt.getEmail());
+        System.out.println("Rol: " + clientCrt.getRol());
+
+        if (clientCrt instanceof ClientPremium) {
+            System.out.println("Abonamentul premium este activ!");
+        }
+        else {
+            System.out.println("Abonamentul premium este inactiv... :(");
+        }
+
+        System.out.println("\n----- Adrese salvate -----");
+        List<Adresa> adrs = new ArrayList<Adresa>(clientCrt.getAdrese());
+        if (adrs.isEmpty()) {
+            System.out.println("Nu exista adrese salvate.");
+        }
+        else {
+            for (int i = 0; i < adrs.size(); ++i) {
+                System.out.println((i+1) + ". " + adrs.size());
+            }
+        }
+
+        System.out.println("\n----- Carduri salvate -----");
+        List<CardBancar> cbs = new ArrayList<CardBancar>(clientCrt.getCarduri());
+        if (cbs.isEmpty()) {
+            System.out.println("Nu exista carduri salvate.");
+        }
+        else {
+            for (int i = 0; i < cbs.size(); ++i) {
+                System.out.println((i+1) + ". " + cbs.get(i));
+            }
+        }
+
+        System.out.println("\n----- Restaurante favorite -----");
+        List<Restaurant> favs = new ArrayList<Restaurant>(clientCrt.getRestauranteFavorite());
+        if (favs.isEmpty()) {
+            System.out.println("Nu exista restaurante favorite.");
+        }
+        else {
+            for (int i = 0; i < favs.size(); ++i) {
+                Restaurant r = favs.get(i);
+                System.out.println((i+1) + ". " + r);
+
+                if (clientCrt instanceof ClientPremium) {
+                    if (clientCrt.areLivrareGratuita(r)) {
+                        System.out.println("Livrare gratuita premium: da!");
+                    }
+                    else {
+                        System.out.println("Livrare gratuita premium: nu... :c");
+                    }
+                }
+            }
+        }
+
+        System.out.println("\n----- Cos curent -----");
+        if (cosService.esteGol(clientCrt)) {
+            System.out.println("Cosul este gol.");
+        }
+        else {
+            Map<ProdusPersonalizat, Integer> prodCos = cosService.getProduseCos(clientCrt);
+            for (Map.Entry<ProdusPersonalizat, Integer> elem : prodCos.entrySet()) {
+                ProdusPersonalizat pp = elem.getKey();
+                Integer cant = elem.getValue();
+
+                System.out.println("- " + pp + ", cantitate=" + cant);
+            }
+
+            System.out.println("Subtotal cos: " + cosService.calculeazaSubtotal(clientCrt));
+        }
+    }
+
+    private static void afiseazaComenziActive() {
+        List<Comanda> comenziActive = comandaService.getComenziActiveClient(clientCrt);
+        if (comenziActive.isEmpty()) {
+            System.out.println("Clientul nu are comenzi active...");
+            return;
+        }
+
+        System.out.println("\n----- Comenzi active -----");
+        for (int i = 0; i < comenziActive.size(); ++i) {
+            System.out.println((i+1) + ". " + comenziActive.get(i));
+        }
+    }
+
+    private static void afiseazaComenziDisponibile() {
+        List<Comanda> comenziDisp = comandaService.getComenziDisponibilePtLivrare();
+        if (comenziDisp.isEmpty()) {
+            System.out.println("Nu exista comenzi disponibile pentru livrare.");
+            return;
+        }
+
+        System.out.println("\n----- Comenzi disponibile pt livrare -----");
+        for (int i = 0; i < comenziDisp.size(); ++i) {
+            System.out.println((i+1) + ". " + comenziDisp.get(i));
+        }
+    }
+
+    private static void preiaComanda() {
+        List<Comanda> comenziDisp = comandaService.getComenziDisponibilePtLivrare();
+        if (comenziDisp.isEmpty()) {
+            System.out.println("Nu exista comenzi disponibile pentru livrare.");
+            return;
+        }
+
+        System.out.println("\n----- Comenzi disponibile pentru livrare -----");
+
+        for (int i = 0; i < comenziDisp.size(); ++i) {
+            System.out.println((i+1) + ". " + comenziDisp.get(i));
+        }
+        System.out.print("Alege comanda de preluat dupa numar: ");
+        int i = Integer.parseInt(scanner.nextLine());
+
+        if (i < 1 || i > comenziDisp.size()) {
+            System.out.println("Indicele pentru comanda este invalid!");
+            return;
+        }
+
+        try {
+            Comanda c = comenziDisp.get(i - 1);
+            comandaService.preiaComanda(c.getId(), soferCrt);
+
+            System.out.println("Comanda a fost preluata cu succes!");
+        } catch (Exception e) { // prinde diverse cum ar fi daca soferul nu e disponibil
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void finalizeazaLivrare() {
+        List<Comanda> cmdsInLivrare = new ArrayList<Comanda>();
+
+        for (Comanda c : comandaService.getComenzi()) {
+            if (c.getStatus() == StatusComanda.IN_LIVRARE && c.areSoferAsignat() &&
+            c.getSoferAsignat().equals(soferCrt)) {
+                cmdsInLivrare.add(c);
+            }
+        }
+
+        if (cmdsInLivrare.isEmpty()) {
+            System.out.println("Nu ai comenzi in livrare, smechere!");
+            return;
+        }
+
+        System.out.println("\n----- Comenzile tale in livrare -----");
+        for (int i = 0; i < cmdsInLivrare.size(); ++i) {
+            System.out.println((i+1) + ". " + cmdsInLivrare.get(i));
+        }
+
+        System.out.print("Alege comanda de finalizat dupa numar: ");
+        int i = Integer.parseInt(scanner.nextLine());
+
+        if (i < 1 || i > cmdsInLivrare.size()) {
+            System.out.println("Acest indice este invalid pt comanda!");
+            return;
+        }
+
+        try {
+            Comanda c = cmdsInLivrare.get(i-1);
+            comandaService.finalizeazaComanda(c.getId());
+
+            System.out.println("Livrarea a fost finalizata cu succes!");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void afiseazaDateSofer() {
+        System.out.println("\n ----- Date cont sofer -----");
+        System.out.println("Nume: " + soferCrt.getNume());
+        System.out.println("Email: " + soferCrt.getEmail());
+        System.out.println("Rol: " + soferCrt.getRol());
+        System.out.println("Balanta: " + soferCrt.getBalanta());
+        System.out.println("Disponibil; " + ((soferCrt.isDisponibil()) ? "da" : "nu"));
+
+        double medieRating = reviewService.getMedieRatingSofer(soferCrt);
+        System.out.println("Medie rating: " + medieRating);
+
+        List<Review> rs = reviewService.getReviewsSofer(soferCrt);
+
+        System.out.println("\n----- Review-uri primite -----");
+        if (rs.isEmpty()) {
+            System.out.println("Soferul acesta nu are review-uri.");
+        }
+        else {
+            for (int i = 0; i < rs.size(); ++i) {
+                System.out.println((i+1) + ". " + rs.get(i));
+            }
+        }
+
+        System.out.println("\n----- Comenzi in livrare -----");
+        boolean existaComenzi = false;
+
+        for (Comanda c : comandaService.getComenzi()) {
+            if (c.getStatus() == StatusComanda.IN_LIVRARE && c.areSoferAsignat() &&
+            c.getSoferAsignat().equals(soferCrt)) {
+                System.out.println(c);
+                existaComenzi = true;
+            }
+        }
+
+        if (!existaComenzi) {
+            System.out.println("Nu exista comenzi in livrare.");
+        }
+    }
+
+    private static void adaugaReview() {
+        List<Comanda> cmdsFinals = comandaService.getIstoricClient(clientCrt);
+        List<Comanda> cmdsFaraReview = new ArrayList<Comanda>();
+
+        for (Comanda c : cmdsFinals) {
+            if (c.areSoferAsignat() && !reviewService.areReview(c)) {
+                cmdsFaraReview.add(c);
+            }
+        }
+        if (cmdsFaraReview.isEmpty()) {
+            System.out.println("Nu exista comenzi finalizare fara review.");
+            return;
+        }
+
+        System.out.println("\n----- Comenzi pt review -----");
+        for (int i = 0; i < cmdsFaraReview.size(); ++i) {
+            System.out.println((i+1) + ". " + cmdsFaraReview.get(i));
+        }
+
+        System.out.print("Alege comanda pentru care vrei sa lasi review: ");
+        int i = Integer.parseInt(scanner.nextLine());
+
+        if (i < 1 || i > cmdsFaraReview.size()) {
+            System.out.println("Indicele pentru comanda este invalid!");
+            return;
+        }
+
+        System.out.print("Rating (1-5): ");
+        int rating = Integer.parseInt(scanner.nextLine());
+        System.out.print("Comentariu: ");
+        String comentariu = scanner.nextLine();
+
+        try {
+            Comanda c = cmdsFaraReview.get(i-1);
+            Review r = new Review(rating, comentariu);
+
+            reviewService.adaugaReview(c, r);
+
+            System.out.println("Review-ul a fost adaugat cu succes!");
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void checkout() {
+        try {
+            if (cosService.esteGol(clientCrt)) {
+                System.out.println("Cosul este gol deci nu se poate face checkout!");
+                return;
+            }
+
+            System.out.print("Introdu numele restaurantului: ");
+            String nume = scanner.nextLine();
+            Restaurant r = restaurantService.cautaDupaNume(nume);
+
+            List<Adresa> adrs = new ArrayList<Adresa>(clientCrt.getAdrese());
+
+            if (adrs.isEmpty()) {
+                System.out.println("Clientul nu are adrese salvate...");
+                return;
+            }
+
+            System.out.println("\n----- Adresele tale -----");
+            for (int i = 0 ; i < adrs.size(); ++i) {
+                System.out.println((i+1) + ". " + adrs.get(i));
+            }
+
+            System.out.print("Alege adresa ta de livrare: ");
+            int i = Integer.parseInt(scanner.nextLine());
+
+            if (i < 1 || i > adrs.size()) {
+                System.out.println("Indicele acesta pentru adresa este invalid!");
+                return; // nu poate continua checkout-ul mai departe fara adresa,
+                        // pt ca comanda trebuie livrata undeva neaparat
+            }
+
+            Adresa adr = adrs.get(i-1);
+
+            System.out.println("\n----- Metoda de plata -----");
+            System.out.println("1. Card");
+            System.out.println("2. Cash");
+            System.out.print("Alege metoda de plata: ");
+
+            int opt = Integer.parseInt(scanner.nextLine());
+            MetodaPlata mp;
+            if (opt == 1) {
+                mp = MetodaPlata.CARD;
+            }
+            else if (opt == 2) {
+                mp = MetodaPlata.CASH;
+            }
+            else {
+                System.out.println("Optiune invalida!");
+                return;
+            }
+            CardBancar cb = null;
+            if (mp == MetodaPlata.CARD) {
+                List<CardBancar> cbs = new ArrayList<CardBancar>(clientCrt.getCarduri());
+                if (cbs.isEmpty()) {
+                    System.out.println("Clientul nu are carduri salvate..");
+                    return;
+                }
+
+                System.out.println("\n----- Cardurile tale -----");
+                for (int j = 0; j < cbs.size(); ++j) {
+                    System.out.println((j+1) + ". " + cbs.get(j));
+                }
+                System.out.print("Alege cardul: ");
+                int k = Integer.parseInt(scanner.nextLine());
+
+                if (k < 1 || k > cbs.size()) {
+                    System.out.println("Indicele pentru card este invalid!");
+                    return;
+                }
+
+                cb = cbs.get(k-1);
+            }
+
+            double subtotal = cosService.calculeazaSubtotal(clientCrt);
+            double taxaLivr = comandaService.calculeazaTaxaLivrare(clientCrt, r);
+            double total = comandaService.calculeazaCheckout(clientCrt, r, mp);
+
+            System.out.println("\n----- Checkout -----");
+            System.out.println("Restaurant: " + r.getNume());
+            System.out.println("Adresa livrare: " + adr);
+            System.out.println("Metoda plata: " + mp);
+            System.out.println("Subtotal produse: " + subtotal);
+            System.out.println("Taxa livrare: " + taxaLivr);
+
+            if (mp == MetodaPlata.CARD) {
+                System.out.println("TVA card: 9%");
+            }
+            else {
+                System.out.println("TVA cash: 0%");
+            }
+
+            System.out.println("Total plata: " + total);
+
+            System.out.print("Confirmi comanda asta? (da sau nu): ");
+            String conf = scanner.nextLine();
+            if (!conf.equalsIgnoreCase("da")) {
+                System.out.println("Checkout-ul a fost anulat!");
+                return;
+            }
+
+            Comanda c = comandaService.checkout(clientCrt, r, adr, mp, cb);
+
+            System.out.println("Comanda a fost plasata cu succes!");
+            System.out.println("Detalii comanda: ");
+            System.out.println(c);
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
 
     private static void initializareDate() {
         Ingredient chifla = new Ingredient("Chifla", false, false);
