@@ -53,7 +53,9 @@ public class Client extends Utilizator {
         if (r == null) {
             throw new RestaurantInvalidException(r);
         }
-        restauranteFavorite.add(r);
+        if (!restauranteFavorite.add(r)) {
+            throw new IllegalArgumentException("Restaurantul exista deja in lista de favorite!");
+        }
     }
 
     public void stergeAdresa(Adresa adresa) {
