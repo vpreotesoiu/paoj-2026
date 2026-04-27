@@ -3,6 +3,9 @@ previous-*
 private/
 temporarily_curs
 
+# output folder for other exercises output
+output/
+
 # for tests:
 *.diff
 
