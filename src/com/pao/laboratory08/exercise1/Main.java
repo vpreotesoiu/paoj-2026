@@ -17,6 +17,47 @@ public class Main {
         //    - SHALLOW <nume> → shallow clone + modifică orașul clonei la "MODIFICAT" + afișează
         //    - DEEP <nume> → deep clone + modifică orașul clonei la "MODIFICAT" + afișează
 
-        System.out.println("TODO: implementează exercițiul 1");
+        ArrayList<Student> studenti = new ArrayList<Student>();
+
+        BufferedReader br = new BufferedReader(new FileReader(FILE_PATH));
+
+        String linie;
+        while ((linie = br.readLine()) != null && linie.length() > 0) {
+            String[] linieSplit = linie.split(",");
+            studenti.add(new Student(linieSplit[0].trim(), Integer.parseInt(linieSplit[1].trim()), new Adresa(linieSplit[2], linieSplit[3])));
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        String comanda = scanner.nextLine();
+        if (comanda.equals("PRINT")) {
+            for (Student s : studenti) {
+                System.out.println(studenti);
+            }
+        }
+        else if (comanda.startsWith("SHALLOW")) {
+            String nume = comanda.split(" ")[1];
+            for (Student s : studenti) {
+                if (s.getNume().equals(nume)) {
+                    Student copie = (Student) s.clone();
+                    copie.getAdresa().setOras("MODIFICAT");
+                    System.out.println("original: " + s);
+                    System.out.println("copie: " + copie);
+                }
+            }
+        }
+        else if (comanda.startsWith("DEEP")) {
+            String nume = comanda.split(" ")[1];
+            for (Student s : studenti) {
+                if (s.getNume().equals(nume)) {
+                    Student copie = (Student) s.clone();
+                    copie.setAdresa((Adresa) s.getAdresa().clone());
+                    copie.getAdresa().setOras("MODIFICAT");
+                    System.out.println("original: " + s);
+                    System.out.println("copie: " + copie);
+                }
+            }
+        }
+
+        br.close();
     }
 }
