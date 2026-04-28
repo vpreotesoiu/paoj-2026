@@ -6,6 +6,7 @@ import com.pao.project.fooddelivery.model.Produs;
 import com.pao.project.fooddelivery.model.Restaurant;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class RestaurantService {
@@ -43,7 +44,9 @@ public class RestaurantService {
     }
 
     public List<Restaurant> getRestaurante() {
-        return List.copyOf(restaurante);
+        List<Restaurant> restauranteSortate = new ArrayList<Restaurant>(restaurante);
+        Collections.sort(restauranteSortate);
+        return restauranteSortate;
     }
 
     public Restaurant cautaDupaNume(String nume) {

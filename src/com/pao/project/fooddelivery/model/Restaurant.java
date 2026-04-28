@@ -5,7 +5,7 @@ import com.pao.project.fooddelivery.exception.ProcentInvalidException;
 import java.util.List;
 import java.util.Objects;
 
-public class Restaurant {
+public class Restaurant implements Comparable<Restaurant> {
     private String nume;
     private Adresa adresa;
     private Meniu meniu;
@@ -120,5 +120,30 @@ public class Restaurant {
     @Override
     public int hashCode() {
         return Objects.hash(nume, adresa);
+    }
+
+    @Override
+    public int compareTo(Restaurant o) {
+        int cmpNume = this.nume.compareTo(o.nume);
+        if (cmpNume != 0) {
+            return cmpNume;
+        }
+
+        int cmpOras = this.adresa.oras().compareTo(o.adresa.oras());
+        if (cmpOras != 0) {
+            return cmpOras;
+        }
+
+        int cmpStrada = this.adresa.strada().compareTo(o.adresa.strada());
+        if (cmpStrada != 0) {
+            return cmpStrada;
+        }
+
+        int cmpNumar = Integer.compare(this.adresa.numar(), o.adresa.numar());
+        if (cmpNumar != 0) {
+            return cmpNumar;
+        }
+
+        return this.adresa.codPostal().compareTo(o.adresa.codPostal());
     }
 }
