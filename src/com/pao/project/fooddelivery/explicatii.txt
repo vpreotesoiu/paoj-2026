@@ -1,0 +1,91 @@
+Etapa I
+
+1. Definirea sistemului
+
+- minim 10 actiuni
+in README sunt 16
+
+- minim 8 obiecte din domeniu
+in README sunt peste 8
+
+2.1 Clase si OOP
+
+- minim 8 clase
+da
+exemple: Utilizator, Client, ClientPremium, Sofer, Restaurant, Meniu, Produs, Comanda, Cos, Review
+
+- atribute private/protected
+da
+in clasele de model, ex Utilizator, Client, Restaurant, Comanda, Produs
+
+- toString equals hashCode in minim 2 clase
+da
+ex Client, Restaurant, Comanda, Produs, Review, CardBancar, Sofer
+
+- mostenire cu minim 2 niveluri
+da
+Utilizator -> Client -> ClientPremium
+
+- clasa abstracta sau interfata
+da
+Utilizator abstracta
+IPlata interfata
+
+- clasa imutabila
+da
+Review
+si in plus Adresa, Ingredient, ValoriNutritionale ca record
+
+- minim 2 exceptii custom aruncate si tratate
+da
+sunt mai multe
+ex ParolaInvalidaException, CantitateInvalidaException, DebitInvalidException, TranzitieInvalidaException
+tratate in Main cu try catch
+
+2.2 Colectii
+
+- minim 2 tipuri diferite de colectii
+da
+List, Set, Map
+
+- una sortata
+da
+Restaurant implementeaza Comparable
+RestaurantService.getRestaurante face sortarea
+
+- minim un Map
+da
+in Cos, CosService, ProdusPersonalizat, ReviewService, Comanda
+
+2.3 Servicii
+
+- minim 2 servicii
+da
+RestaurantService, UtilizatorService, CosService, ComandaService, ReviewService
+
+- singleton
+da
+toate serviciile au getInstance si holder intern
+
+- operatii de tip adauga sterge cauta listeaza
+da
+mai ales in RestaurantService si UtilizatorService
+
+- Main demonstreaza actiunile
+da
+are meniu principal, meniu client, meniu sofer
+actiuni: login, afisare restaurante, meniu, cos, checkout, review, preluare comanda, finalizare livrare si mai multe
+
+2.4 Organizare si calitate
+
+- subpachete logice
+da
+model, service, exception, Main
+
+- fara cod duplicat
+da
+
+- fara NullPointerException, validari in servicii
+da
+sunt multe verificari de null in constructori, servicii si metode importante
+se verifica client, sofer, restaurant, produs, adresa, metoda plata inainte sa se foloseasca
