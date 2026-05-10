@@ -9,15 +9,33 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Client extends Utilizator {
+    private int id;
     private Set<Adresa> adrese;
     private Set<CardBancar> carduri;
     private Set<Restaurant> restauranteFavorite;
 
     public Client(String nume, String email, String parola) {
         super(nume, email, parola);
+        this.id = 0;
         this.adrese = new HashSet<Adresa>();
         this.carduri = new HashSet<CardBancar>();
         this.restauranteFavorite = new HashSet<Restaurant>();
+    }
+
+    public Client(int id, String nume, String email, String parola) {
+        super(nume, email, parola);
+        this.id = id;
+        this.adrese = new HashSet<Adresa>();
+        this.carduri = new HashSet<CardBancar>();
+        this.restauranteFavorite = new HashSet<Restaurant>();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Set<Adresa> getAdrese() {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Produs {
+    private int id;
     private String nume, categorie;
     private double pret;
     private List<Ingredient> ingrediente;
@@ -21,12 +22,40 @@ public class Produs {
         if (valoriNutritionale == null) {
             throw new IllegalArgumentException("Produsul trebuie sa contina valori nutritionale!");
         }
+        this.id = 0;
         this.nume = nume.trim();
         setCategorie(categorie); // validarea categoriei se face in setter
         this.pret = pret;
         this.ingrediente = new ArrayList<Ingredient>();
         this.ingredienteExtraDisponibile = new ArrayList<IngredientExtra>();
         this.valoriNutritionale = valoriNutritionale;
+    }
+
+    public Produs(int id, String nume, String categorie, double pret, ValoriNutritionale valoriNutritionale) {
+        if (nume == null || nume.isBlank()) {
+            throw new IllegalArgumentException("Numele produsului nu poate fi gol!");
+        }
+        if (pret < 0) {
+            throw new IllegalArgumentException("Pretul produsului trebuie sa fie pozitiv!");
+        }
+        if (valoriNutritionale == null) {
+            throw new IllegalArgumentException("Produsul trebuie sa contina valori nutritionale!");
+        }
+        this.id = id;
+        this.nume = nume.trim();
+        setCategorie(categorie); // validarea categoriei se face in setter
+        this.pret = pret;
+        this.ingrediente = new ArrayList<Ingredient>();
+        this.ingredienteExtraDisponibile = new ArrayList<IngredientExtra>();
+        this.valoriNutritionale = valoriNutritionale;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNume() {

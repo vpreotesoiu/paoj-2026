@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Comanda {
-    private static int cnt = 0;
-
     private int id;
     private Client client;
     private Restaurant restaurant;
@@ -53,7 +51,7 @@ public class Comanda {
                         " nu apartine restaurantului " + restaurant.getNume() + "!");
             }
         }
-        this.id = ++cnt;
+        this.id = 0;
         this.client = client;
         this.restaurant = restaurant;
         this.adresaLivrare = adresaLivrare;
@@ -63,8 +61,59 @@ public class Comanda {
         this.soferAsignat = null;
     }
 
+    public Comanda(int id, Client client, Restaurant restaurant, Adresa adresaLivrare,
+                   Map<ProdusPersonalizat, Integer> produse, MetodaPlata metodaPlata,
+                   StatusComanda status, Sofer soferAsignat) {
+        if (client == null) {
+            throw new IllegalArgumentException("Clientul asociat comenzii nu trebuie sa fie vid!");
+        }
+        if (restaurant == null) {
+            throw new IllegalArgumentException("Restaurantul asociat comenzii nu trebuie sa fie vid!");
+        }
+        if (adresaLivrare == null) {
+            throw new IllegalArgumentException("Adresa de livrare nu trebuie sa fie vida!");
+        }
+        if (produse == null || produse.isEmpty()) {
+            throw new IllegalArgumentException("Dictionarul de produse de inclus in restaurant trebuie sa contina produse!");
+        }
+        if (metodaPlata == null) {
+            throw new IllegalArgumentException("Comanda trebuie sa fie efectuata cu o metoda de plata (campul metodei de plata este vid)!");
+        }
+        // validare produse din cos
+        for (Map.Entry<ProdusPersonalizat, Integer> elem : produse.entrySet()) {
+            ProdusPersonalizat pp = elem.getKey();
+            Integer cant = elem.getValue();
+            if (pp == null) {
+                throw new IllegalArgumentException("Exista un produs personalizat vid in comanda!");
+            }
+            if (cant == null || cant <= 0) {
+                throw new IllegalArgumentException("Cantitatea produsului trebuie sa fie pozitiva!");
+            }
+        }
+        List<Produs> produseRestaurant = restaurant.getProduse();
+        // validare restaurant
+        for (ProdusPersonalizat pp : produse.keySet()) {
+            if (!produseRestaurant.contains(pp.getProdus())) {
+                throw new IllegalArgumentException("Produsul " + pp.getProdus().getNume() +
+                        " nu apartine restaurantului " + restaurant.getNume() + "!");
+            }
+        }
+        this.id = id;
+        this.client = client;
+        this.restaurant = restaurant;
+        this.adresaLivrare = adresaLivrare;
+        this.produse = new HashMap<ProdusPersonalizat, Integer>(produse);
+        this.status = status;
+        this.metodaPlata = metodaPlata;
+        this.soferAsignat = soferAsignat;
+    }
+
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Client getClient() {

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Restaurant implements Comparable<Restaurant> {
+    private int id;
     private String nume;
     private Adresa adresa;
     private Meniu meniu;
@@ -24,12 +25,41 @@ public class Restaurant implements Comparable<Restaurant> {
         if (taxaLivrare < 0) {
             throw new IllegalArgumentException("Taxa de livrare trebuie sa fie pozitiva!");
         }
+        this.id = 0;
         this.nume = nume.trim();
         this.adresa = adresa;
         this.taxaLivrare = taxaLivrare;
         setProcentComisionSofer(procentComisionSofer);
         this.livrareGratuita = livrareGratuita;
         this.meniu = new Meniu();
+    }
+
+    public Restaurant(int id, String nume, Adresa adresa, double taxaLivrare,
+                      double procentComisionSofer, boolean livrareGratuita) {
+        if (nume == null || nume.isBlank()) {
+            throw new IllegalArgumentException("Numele restaurantului nu poate fi gol!");
+        }
+        if (adresa == null) {
+            throw new IllegalArgumentException("Adresa restaurantului nu poate fi vida!");
+        }
+        if (taxaLivrare < 0) {
+            throw new IllegalArgumentException("Taxa de livrare trebuie sa fie pozitiva!");
+        }
+        this.id = id;
+        this.nume = nume.trim();
+        this.adresa = adresa;
+        this.taxaLivrare = taxaLivrare;
+        setProcentComisionSofer(procentComisionSofer);
+        this.livrareGratuita = livrareGratuita;
+        this.meniu = new Meniu();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNume() {

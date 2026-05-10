@@ -4,6 +4,7 @@ import com.pao.project.fooddelivery.exception.DebitInvalidException;
 import com.pao.project.fooddelivery.exception.SumaInvalidaException;
 
 public class CardBancar {
+    private int id;
     private String numar;
     private double balanta;
 
@@ -11,8 +12,26 @@ public class CardBancar {
         if (numar == null || numar.isBlank()) {
             throw new IllegalArgumentException("Numarul cardului bancar nu ar trebui sa fie gol!");
         }
+        this.id = 0;
         this.numar = numar.trim();
         balanta = 0;
+    }
+
+    public CardBancar(int id, String numar, double balanta) {
+        if (numar == null || numar.isBlank()) {
+            throw new IllegalArgumentException("Numarul cardului bancar nu ar trebui sa fie gol!");
+        }
+        this.id = id;
+        this.numar = numar.trim();
+        this.balanta = balanta;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNumar() {

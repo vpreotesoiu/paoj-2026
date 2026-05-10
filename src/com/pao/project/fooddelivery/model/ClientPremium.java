@@ -6,6 +6,10 @@ public class ClientPremium extends Client {
         super(nume, email, parola);
     }
 
+    public ClientPremium(int id, String nume, String email, String parola) {
+        super(id, nume, email, parola);
+    }
+
     @Override
     public boolean areLivrareGratuita(Restaurant r) {
         if (r == null) {
