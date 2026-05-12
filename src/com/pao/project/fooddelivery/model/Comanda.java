@@ -189,11 +189,20 @@ public class Comanda {
             return false;
         }
         Comanda c = (Comanda) o;
-        return id == c.id;
+
+        if (id != 0 && c.id != 0) {
+            return id == c.id;
+        }
+        return Objects.equals(client, c.client) && Objects.equals(restaurant, c.restaurant)
+                && Objects.equals(adresaLivrare, c.adresaLivrare) && Objects.equals(produse, c.produse)
+                && metodaPlata == c.metodaPlata;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        if (id != 0) {
+            return Objects.hash(id);
+        }
+        return Objects.hash(client, restaurant, adresaLivrare, produse, metodaPlata);
     }
 }

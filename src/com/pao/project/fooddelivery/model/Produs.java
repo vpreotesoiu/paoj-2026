@@ -6,13 +6,17 @@ import java.util.Objects;
 
 public class Produs {
     private int id;
+    private int restaurantId;
     private String nume, categorie;
     private double pret;
     private List<Ingredient> ingrediente;
     private List<IngredientExtra> ingredienteExtraDisponibile;
     private ValoriNutritionale valoriNutritionale;
 
-    public Produs(String nume, String categorie, double pret, ValoriNutritionale valoriNutritionale) {
+    public Produs(int restaurantId, String nume, String categorie, double pret, ValoriNutritionale valoriNutritionale) {
+        if (restaurantId <= 0) {
+            throw new IllegalArgumentException("Id-ul restaurantului trebuie sa fie pozitiv!");
+        }
         if (nume == null || nume.isBlank()) {
             throw new IllegalArgumentException("Numele produsului nu poate fi gol!");
         }
@@ -23,6 +27,7 @@ public class Produs {
             throw new IllegalArgumentException("Produsul trebuie sa contina valori nutritionale!");
         }
         this.id = 0;
+        this.restaurantId = restaurantId;
         this.nume = nume.trim();
         setCategorie(categorie); // validarea categoriei se face in setter
         this.pret = pret;
@@ -31,7 +36,10 @@ public class Produs {
         this.valoriNutritionale = valoriNutritionale;
     }
 
-    public Produs(int id, String nume, String categorie, double pret, ValoriNutritionale valoriNutritionale) {
+    public Produs(int id, int restaurantId, String nume, String categorie, double pret, ValoriNutritionale valoriNutritionale) {
+        if (restaurantId <= 0) {
+            throw new IllegalArgumentException("Id-ul restaurantului trebuie sa fie pozitiv!");
+        }
         if (nume == null || nume.isBlank()) {
             throw new IllegalArgumentException("Numele produsului nu poate fi gol!");
         }
@@ -42,6 +50,7 @@ public class Produs {
             throw new IllegalArgumentException("Produsul trebuie sa contina valori nutritionale!");
         }
         this.id = id;
+        this.restaurantId = restaurantId;
         this.nume = nume.trim();
         setCategorie(categorie); // validarea categoriei se face in setter
         this.pret = pret;
@@ -56,6 +65,10 @@ public class Produs {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getRestaurantId() {
+        return restaurantId;
     }
 
     public String getNume() {
@@ -175,11 +188,18 @@ public class Produs {
             return false;
         }
         Produs p = (Produs) o;
-        return Double.compare(pret, p.pret) == 0 && Objects.equals(nume, p.nume) && Objects.equals(categorie, p.categorie);
+        // daca cumva obiectele de produs sunt cele persistate din bd, comparam dupa id
+        if (id != 0 && p.id != 0) {
+            return id == p.id;
+        }
+        return restaurantId == p.restaurantId && Double.compare(pret, p.pret) == 0 && Objects.equals(nume, p.nume) && Objects.equals(categorie, p.categorie);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nume, categorie, pret);
+        if (id != 0) {
+            return Objects.hash(id);
+        }
+        return Objects.hash(restaurantId, nume , categorie, pret);
     }
 }

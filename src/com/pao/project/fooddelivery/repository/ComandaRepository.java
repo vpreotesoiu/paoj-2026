@@ -371,9 +371,10 @@ public class ComandaRepository implements Repository<Comanda, Integer> {
                     double proteine = rs.getDouble("proteine");
                     double carbo = rs.getDouble("carbohidrati");
                     double grasimi = rs.getDouble("grasimi");
+                    int restId = rs.getInt("restaurant_id");
 
                     ValoriNutritionale valNut = new ValoriNutritionale(cal, proteine, carbo, grasimi);
-                    Produs p = new Produs(prodId, nume, cat, pret, valNut);
+                    Produs p = new Produs(prodId, restId, nume, cat, pret, valNut);
                     List<Ingredient> ingrs = citesteIngredienteProdus(prodId);
                     for (Ingredient ingr : ingrs) {
                         p.adaugaIngredient(ingr);

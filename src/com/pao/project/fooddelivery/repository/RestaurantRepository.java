@@ -344,7 +344,7 @@ public class RestaurantRepository implements Repository<Restaurant, Integer> {
                     double grasimi = rs.getDouble("grasimi");
 
                     ValoriNutritionale valNut = new ValoriNutritionale(cal, proteine, carbohidrati, grasimi);
-                    Produs p = new Produs(idProd, nume, cat, pret, valNut);
+                    Produs p = new Produs(idProd, restId, nume, cat, pret, valNut);
                     List<Ingredient> is = citesteIngrediente(idProd);
                     for (Ingredient i : is) {
                         p.adaugaIngredient(i);

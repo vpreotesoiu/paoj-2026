@@ -102,6 +102,6 @@ public final class Review {
 
     @Override
     public int hashCode() {
-        return Objects.hash(rating, comentariu);
+        return Objects.hash(comandaId);
     }
 }
