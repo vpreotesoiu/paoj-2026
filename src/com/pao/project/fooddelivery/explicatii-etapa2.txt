@@ -1,0 +1,114 @@
+Etapa II
+
+1. Baza de date relationala + JDBC
+
+1.1 Schema bazei de date
+
+- schema.sql in radacina proiectului
+fisierul este in folderul fooddelivery
+
+- create table pt entitatile persistente
+am creat urmatoarele tabele: adrese, clienti, soferi, restaurante, produse, ingrediente, extra,
+carduri, clienti_adrese, favorite, comenzi, iteme_comanda, iteme_fara, iteme_extra, reviewuri
+
+- chei primare pentru toate tabelele
+toate tabelele au id cu INTEGER PRIMARY KEY AUTOINCREMENT
+
+- minim 2 foreign key
+de exemplu:
+in restaurante, campul adresa_id are fk catre adrese(id)
+in produse, campul restaurant_id are fk catre restaurante(id)
+
+- drop table if exists la inceput
+schema.sql fix cu asta incepe , dropuri deastea pt toate tabelele dar in ordinea inversa a
+dependentelor
+
+- db.properties in resources
+este
+
+- fara credentiale hardcodate in cod
+sqlite nu are user si parola ca autentificare, url-ul se citeste din db.properties
+
+1.2 Conexiunea la baza de date
+
+- DatabseConnection singleton
+are holder intern cu constructor private si getInstance, pe stil clasic ca la servicii
+
+- citeste configuratie din db.properties
+da
+
+- expune connection reutilizabil
+are camp privat connection si getter pt el
+
+1.3 Interfata generica Repository
+
+- interfata generica de genul Repository<T, ID>
+are toate metodele care trebuie : save, findById, findAll, update, delete
+
+- minim 4 repository
+exemple: ClientRepository, SoferRepository, RestaurantRepository, ComandaRepository, ...
+
+- toate interogarile SQL folosesc PreparedStatement
+in repository-uri numai asa am facut. toate operatiile crud folosesc preparedstatement
+singurul caz in care nu este folosit este la un truc care incarca dinamic schema daca baza
+de date nu exista, in care am folosit statement in loc de preparedstatement
+pentru ca nu era nici un query string de modificat, doar ceva static
+
+- toate resursele sunt inchise cu try-with-resources
+da, am folosit acelasi pattern ca la laborator, cu preparedstatement si resultset
+
+2.  Tranzactii JDBC
+- minim o operatie pe mai multe tabele intr-o tranzactie explicita
+dap
+
+- set auto commit commit rollback si toate cele
+sunt cateva exemple in comandaservice
+
+- exemple concrete din proiect
+sunt: checkout, preiaComanda si finalizeazaComanda
+
+- ce fac tranzactiile
+checkout face plata, salveaza detaliile comenzii si goleste cosul
+preiaComanda actualizeaza comanda si soferul in one go in aceeasi tranzactie
+finalizeazaComanda actualizeaza si statusul comenzii (ca a fost livrata) si balanta si disponibilitatea soferului
+
+3. Interogari avansate cu join
+
+- minim 3 query cu join
+da
+
+- joinul 1
+am facut istoric de comenzi ale clientului cu detalii despre restaurant, sofer si review
+este in ComandaRepository dar l-am expus prin ComandaService
+
+- joinul 2
+arata ce comenzi sunt disponibile pentru livrare, cu detalii despre client, restaurant si addresa
+tot in ComandaRepository este facut si expus prin ComandaService
+
+- joinul 3
+am calculat media la ratinguri obtinute de soferi dar din sql cu avg si group by
+este in ReviewRepository si expus prin ReviewService
+
+4. Serviciu de audit
+
+- AuditService singleton
+are tot holder intern cu constructor privat si getInstance
+
+- scrie in audit.csv
+normal, cu pattern-ul de la laborator
+
+- format "actiune,timestamp"
+da, am folosit numele actiunii (inventat ca sa sune ca ceva ce ar aparea intr-un log dar ma rog)
+si am luat timestamp-ul cu LocalDateTime.now()
+
+- este thread-safe
+metoda log() care scrie in csv are synchronized
+
+- toate actiunile documentate din readme sunt auditate
+readme-ul corespunde cu actiunile care se pot face in main.java
+exista audit pentru afisarea de restaurante, afisare meniu, istoric comenzi, comenzile disponibile, ...
+
+
+
+in plus: totul este demonstrabil in main, datele introduse de utilizator au persistenta datorita bazei de date
+(daca nu s-a inteles deja)

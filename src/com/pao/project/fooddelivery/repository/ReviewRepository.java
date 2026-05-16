@@ -169,6 +169,38 @@ public class ReviewRepository implements Repository<Review, Integer> {
         }
     }
 
+    // join pe reviewuri, soferi
+    public List<String> getMedieRatingSoferi() {
+        String sql = """
+                SELECT s.id AS sofer_id,
+                s.nume AS sofer_nume,
+                AVG(rv.rating) AS media_rating,
+                COUNT(rv.id) AS nr_reviewuri
+                FROM reviewuri rv
+                JOIN soferi s ON s.id=rv.sofer_id
+                GROUP BY rv.sofer_id, s.nume, s.id
+                ORDER BY s.id
+                """;
+        List<String> linii = new ArrayList<String>();
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int idSofer = rs.getInt("sofer_id");
+                    String numeSof = rs.getString("sofer_nume");
+                    double media = rs.getDouble("media_rating");
+                    int nrRev = rs.getInt("nr_reviewuri");
+                    String linie = "Sofer nr. " + idSofer + ", nume='" + numeSof + "', media_rating=" + media + ", nr_reviewuri=" + nrRev;
+                    linii.add(linie);
+                }
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException("Eroare la citirea mediei ratingului pentru soferi: ", e);
+        }
+        return linii;
+    }
+
     private Review buildReview(ResultSet rs) throws SQLException {
         int idRev = rs.getInt("id");
         int cmdId = rs.getInt("comanda_id");

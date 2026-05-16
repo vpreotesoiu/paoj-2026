@@ -1,2 +1,0 @@
-Original: Student{nume='Ana', varsta=19, adresa=Adresa{oras='București', strada='Calea Victoriei'}}
-Clona: Student{nume='Ana', varsta=19, adresa=Adresa{oras='MODIFICAT', strada='Calea Victoriei'}}

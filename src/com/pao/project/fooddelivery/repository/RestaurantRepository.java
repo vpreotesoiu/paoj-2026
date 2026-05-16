@@ -459,6 +459,24 @@ public class RestaurantRepository implements Repository<Restaurant, Integer> {
         }
     }
 
+    public boolean isEmpty() {
+        String sql = "SELECT id FROM restaurante";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException("Eroare la verificarea daca tabela restaurante este goala: ", e);
+        }
+    }
+
     private Restaurant buildRestaurant(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         String nume = rs.getString("nume");

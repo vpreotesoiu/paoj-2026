@@ -11,22 +11,23 @@
 2. **Afiseaza meniul unui restaurant** - listeaza produsele unui restaurant, cu ingrediente si valori nutritionale
 3. **Afiseaza istoricul comenzilor** - returneaza toate comenzile finalizate ale unui client
 4. **Afiseaza comenzile disponibile pentru livrare** - listeaza comenzile nepreluate, vizibile pentru soferi
-5. **Afiseaza datele contului** - afiseaza profilul clientului (adrese salvate, carduri, favorite)
-6. **Afiseaza checkout-ul comenzii** - confirmarea finala cu total, TVA si metoda de plata aleasa
 
 ### Interactiuni client
-7. **Adauga / sterge produse din cos** - clientul gestioneaza cosul curent inainte de checkout
-8. **Adauga / sterge restaurant la favorite** - clientul salveaza sau elimina restaurante din lista de favorite
-9. **Adauga / sterge adrese de livrare** - clientul gestioneaza adresele asociate contului sau
-10. **Adauga / sterge carduri bancare** - clientul adauga carduri cu balanta, cu posibilitate de top-up
-11. **Checkout comanda** - clientul finalizeaza cosul si plaseaza comanda, se alege metoda de plata
-12. **Selectare metoda de plata** - clientul alege intre plata cu cardul (online, cu TVA) sau cash (fizic)
-13. **Personalizare ingrediente** - clientul modifica ingredientele optionale ale unui produs, acolo unde restaurantul permite
-14. **Adauga review** - dupa livrare, clientul poate lasa un review optional pentru sofer si comanda
+5. **Adauga produs in cos** - clientul adauga un produs personalizat in cosul curent
+6. **Sterge produs din cos** - clientul elimina un produs din cosul curent
+7. **Goleste cosul** - clientul reseteaza complet cosul curent
+8. **Adauga restaurant la favorite** - clientul salveaza un restaurant in lista de favorite
+9. **Sterge restaurant de la favorite** - clientul elimina un restaurant din lista de favorite
+10. **Adauga adresa de livrare** - clientul adauga o adresa noua asociata contului sau
+11. **Sterge adresa de livrare** - clientul elimina o adresa existenta asociata contului sau
+12. **Adauga card bancar** - clientul adauga un card cu balanta in cont
+13. **Sterge card bancar** - clientul elimina un card salvat din cont
+14. **Checkout comanda** - clientul finalizeaza cosul si plaseaza comanda
+15. **Adauga review** - dupa livrare, clientul poate lasa un review optional pentru sofer si comanda
 
 ### Interactiuni sofer
-15. **Preia comanda** - soferul selecteaza o comanda din lista celor disponibile si o marcheaza ca in livrare
-16. **Finalizeaza livrare** - soferul marcheaza comanda ca livrata, i se crediteaza comisionul in balanta
+16. **Preia comanda** - soferul selecteaza o comanda din lista celor disponibile si o marcheaza ca in livrare
+17. **Finalizeaza livrare** - soferul marcheaza comanda ca livrata, i se crediteaza comisionul in balanta
 
 ---
 

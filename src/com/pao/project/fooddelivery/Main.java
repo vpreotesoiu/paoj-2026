@@ -1,6 +1,7 @@
 package com.pao.project.fooddelivery;
 
 import com.pao.project.fooddelivery.model.*;
+import com.pao.project.fooddelivery.repository.ProdusRepository;
 import com.pao.project.fooddelivery.service.*;
 
 import java.util.ArrayList;
@@ -16,12 +17,17 @@ public class Main {
     private static ComandaService comandaService = ComandaService.getInstance();
     private static CosService cosService = CosService.getInstance();
     private static ReviewService reviewService = ReviewService.getInstance();
+    private static AuditService auditService = AuditService.getInstance();
 
     private static Client clientCrt = null;
     private static Sofer soferCrt = null;
 
     public static void main(String[] args) {
-        initializareDate();
+//        initializareDate();
+
+        if (restaurantService.getRestaurante().isEmpty()) {
+            initializareDate();
+        }
 
         boolean inMeniu = true;
         while (inMeniu) {
@@ -69,8 +75,12 @@ public class Main {
     private static void loginClient() {
         System.out.print("Email client: ");
         String email = scanner.nextLine().trim();
+        System.out.print("Parola client: ");
+        String parola = scanner.nextLine().trim();
         try {
-            clientCrt = utilizatorService.cautaClientDupaEmail(email);
+//            clientCrt = utilizatorService.cautaClientDupaEmail(email);
+            clientCrt = utilizatorService.autentificaClient(email, parola);
+            auditService.log("LOGIN_CLIENT");
             System.out.println("Login reusit. Bun venit " + clientCrt.getNume() + "!");
             meniuClient();
         } catch (RuntimeException e) {
@@ -81,8 +91,12 @@ public class Main {
     private static void loginSofer() {
         System.out.print("Email sofer: ");
         String email = scanner.nextLine().trim();
+        System.out.print("Parola client: ");
+        String parola = scanner.nextLine().trim();
         try {
-            soferCrt = utilizatorService.cautaSoferDupaEmail(email);
+//            soferCrt = utilizatorService.cautaSoferDupaEmail(email);
+            soferCrt = utilizatorService.autentificaSofer(email, parola);
+            auditService.log("LOGIN_SOFER");
             System.out.println("Login reusit. Bun venit " + soferCrt.getNume() + "!");
             meniuSofer();
         }
@@ -239,6 +253,7 @@ public class Main {
         try {
             Client c = new Client(nume, email, parola);
             utilizatorService.adaugaClient(c);
+            auditService.log("INREGISTRARE_CLIENT");
             System.out.println("Clientul a fost inregistrat cu succes!");
         }
         catch (RuntimeException e) {
@@ -256,6 +271,7 @@ public class Main {
         for (int i = 0; i < restaurante.size(); ++i) {
             System.out.println((i+1) + ". " + restaurante.get(i));
         }
+        auditService.log("AFISARE_RESTAURANTE");
     }
 
     private static void afiseazaMeniuRestaurant() {
@@ -274,6 +290,7 @@ public class Main {
             for (int i = 0; i < produse.size(); ++i) {
                 System.out.println((i+1) + ". " + produse.get(i));
             }
+            auditService.log("AFISARE_MENIU_RESTAURANT");
         }
         catch (RuntimeException e) {
             System.out.println(e.getMessage());
@@ -338,6 +355,7 @@ public class Main {
             System.out.print("Cantitate produs: ");
             int cant = Integer.parseInt(scanner.nextLine().trim());
             cosService.adaugaProdus(clientCrt, pp, cant);
+            auditService.log("ADAUGA_PRODUS_COS");
             System.out.println("Produsul a fost adaugat in cos cu succes!");
         }
         catch (RuntimeException e) {
@@ -397,6 +415,7 @@ public class Main {
             ProdusPersonalizat produsSters = produse.get(i-1); // i-1 pt ca lista incepe de la 0
 
             cosService.stergeProdus(clientCrt, produsSters);
+            auditService.log("STERGE_PRODUS_COS");
             System.out.println("Produsul a fost sters din cos cu succes!");
         }
         catch (RuntimeException e) {
@@ -412,6 +431,7 @@ public class Main {
             }
 
             cosService.golesteCos(clientCrt);
+            auditService.log("GOLESTE_COS");
             System.out.println("Cosul a fost golit cu succes.");
         }
         catch (RuntimeException e) {
@@ -421,7 +441,8 @@ public class Main {
 
     private static void afiseazaIstoricComenzi() {
         try {
-            List<Comanda> ist = comandaService.getIstoricClient(clientCrt);
+//            List<Comanda> ist = comandaService.getIstoricClient(clientCrt);
+            List<String> ist = comandaService.getDetaliiIstoricComenziClient(clientCrt);
             if (ist.isEmpty()) {
                 System.out.println("Clientul nu are nici o comanda finalizata in istoric.");
                 return;
@@ -431,6 +452,7 @@ public class Main {
             for (int i = 0; i < ist.size(); ++i) {
                 System.out.println((i+1) + ". " + ist.get(i));
             }
+            auditService.log("AFISARE_ISTORIC_COMENZI");
         }
         catch (RuntimeException e) {
             System.out.println(e.getMessage());
@@ -450,6 +472,8 @@ public class Main {
 
             Adresa adr = new Adresa(strada, nr, oras, codPostal);
             clientCrt.adaugaAdresa(adr);
+            utilizatorService.actualizeazaClient(clientCrt);
+            auditService.log("ADAUGA_ADRESA");
             System.out.println("Adresa a fost adaugata cu succes!");
         }
         catch (RuntimeException e) {
@@ -480,6 +504,8 @@ public class Main {
 
             Adresa adr = adrs.get(i-1);
             clientCrt.stergeAdresa(adr);
+            utilizatorService.actualizeazaClient(clientCrt);
+            auditService.log("STERGE_ADRESA");
 
             System.out.println("Adresa a fost stearsa cu succes!");
         }
@@ -505,6 +531,8 @@ public class Main {
             }
 
             clientCrt.adaugaCard(cb);
+            utilizatorService.actualizeazaClient(clientCrt);
+            auditService.log("ADAUGA_CARD");
 
             System.out.println("Cardul a fost adaugat cu succes!");
         }
@@ -536,6 +564,8 @@ public class Main {
 
             CardBancar cb = cbs.get(i-1);
             clientCrt.stergeCard(cb);
+            utilizatorService.actualizeazaClient(clientCrt);
+            auditService.log("STERGE_CARD");
 
             System.out.println("Cardul a fost sters cu succes!");
         }
@@ -566,6 +596,8 @@ public class Main {
 
             Restaurant r = rs.get(i-1);
             clientCrt.adaugaRestaurantFavorit(r);
+            utilizatorService.actualizeazaClient(clientCrt);
+            auditService.log("ADAUGA_FAVORIT");
             System.out.println("Restaurantul a fost adaugat la favorite cu succes!");
         }
         catch (RuntimeException e) {
@@ -595,6 +627,8 @@ public class Main {
 
             Restaurant r = rsFav.get(i-1);
             clientCrt.stergeFavorit(r);
+            utilizatorService.actualizeazaClient(clientCrt);
+            auditService.log("STERGE_FAVORIT");
 
             System.out.println("Restaurantul a fost sters de la favorite cu succes!");
         }
@@ -690,7 +724,8 @@ public class Main {
     }
 
     private static void afiseazaComenziDisponibile() {
-        List<Comanda> comenziDisp = comandaService.getComenziDisponibilePtLivrare();
+//        List<Comanda> comenziDisp = comandaService.getComenziDisponibilePtLivrare();
+        List<String> comenziDisp = comandaService.getDetaliiComenziDisponibile();
         if (comenziDisp.isEmpty()) {
             System.out.println("Nu exista comenzi disponibile pentru livrare.");
             return;
@@ -700,6 +735,8 @@ public class Main {
         for (int i = 0; i < comenziDisp.size(); ++i) {
             System.out.println((i+1) + ". " + comenziDisp.get(i));
         }
+
+        auditService.log("AFISARE_COMENZI_DISPONIBILE");
     }
 
     private static void preiaComanda() {
@@ -725,6 +762,7 @@ public class Main {
 
             Comanda c = comenziDisp.get(i - 1);
             comandaService.preiaComanda(c.getId(), soferCrt);
+            auditService.log("PREIA_COMANDA");
 
             System.out.println("Comanda a fost preluata cu succes!");
         }
@@ -764,6 +802,7 @@ public class Main {
 
             Comanda c = cmdsInLivrare.get(i-1);
             comandaService.finalizeazaComanda(c.getId());
+            auditService.log("FINALIZEAZA_COMANDA");
 
             System.out.println("Livrarea a fost finalizata cu succes!");
         }
@@ -782,6 +821,18 @@ public class Main {
 
         double medieRating = reviewService.getMedieRatingSofer(soferCrt);
         System.out.println("Medie rating: " + medieRating);
+
+        // o bag pe asta aici shamelessly pentru ca mi-e lene sa fac o functie noua
+        System.out.println("Mediile pe rating ale tuturor soferilor (ca sa compari cat de bun e soferul tau):");
+        List<String> mediiSoferi = reviewService.getMedieRatingSoferiStrs();
+        if (mediiSoferi.isEmpty()) {
+            System.out.println("Nevermind, nu exista inca review-uri in sistem. Ignora asta.");
+        }
+        else {
+            for (String l : mediiSoferi) {
+                System.out.println(l);
+            }
+        }
 
         List<Review> rs = reviewService.getReviewsSofer(soferCrt);
 
@@ -845,9 +896,10 @@ public class Main {
             String comentariu = scanner.nextLine().trim();
 
             Comanda c = cmdsFaraReview.get(i-1);
-            Review r = new Review(rating, comentariu);
+            Review r = new Review(c.getId(), c.getSoferAsignat().getId(), rating, comentariu);
 
             reviewService.adaugaReview(c, r);
+            auditService.log("ADAUGA_REVIEW");
 
             System.out.println("Review-ul a fost adaugat cu succes!");
         }
@@ -963,6 +1015,7 @@ public class Main {
             }
 
             Comanda c = comandaService.checkout(clientCrt, r, adr, mp, cb);
+            auditService.log("CHECKOUT_COMANDA");
 
             System.out.println("Comanda a fost plasata cu succes!");
             System.out.println("Detalii comanda: ");
@@ -984,6 +1037,23 @@ public class Main {
     }
 
     private static void initializareDate() {
+        ProdusRepository produsRepository = new ProdusRepository();
+
+        Restaurant burgerHouse = new Restaurant("Burger House",
+                new Adresa("Strada Lalelelor", 10, "Bucuresti", "011141"),
+                8,
+                0.10,
+                true);
+
+        Restaurant pizzaRoma = new Restaurant("Pizza Roma",
+                new Adresa("Strada Viitorului", 22, "Bucuresti", "030167"),
+                6,
+                0.12,
+                false);
+
+        restaurantService.adaugaRestaurant(burgerHouse);
+        restaurantService.adaugaRestaurant(pizzaRoma);
+
         Ingredient chifla = new Ingredient("Chifla", false, false);
         Ingredient carne = new Ingredient("Carne de vita", false, false);
         Ingredient ceapa = new Ingredient("Ceapa", false, true);
@@ -996,7 +1066,7 @@ public class Main {
         IngredientExtra cascavalExtra = new IngredientExtra(cascaval, 3.5);
         IngredientExtra sosExtra = new IngredientExtra(sos, 2);
 
-        Produs burgerClasic = new Produs(
+        Produs burgerClasic = new Produs(burgerHouse.getId(),
                 "Burger Clasic",
                 "Burger",
                 24,
@@ -1010,7 +1080,7 @@ public class Main {
         burgerClasic.adaugaIngredientExtraDisponibil(cascavalExtra);
         burgerClasic.adaugaIngredientExtraDisponibil(sosExtra);
 
-        Produs cartofi = new Produs(
+        Produs cartofi = new Produs(burgerHouse.getId(),
                 "Cartofi Prajiti",
                 "Garnitura",
                 10,
@@ -1019,7 +1089,7 @@ public class Main {
         cartofi.adaugaIngredient(new Ingredient("Cartofi", false, false));
         cartofi.adaugaIngredient(new Ingredient("Sare", false, true));
 
-        Produs tiramisu = new Produs(
+        Produs tiramisu = new Produs(burgerHouse.getId(),
                 "Tiramisu",
                 "Desert",
                 18,
@@ -1029,16 +1099,9 @@ public class Main {
         tiramisu.adaugaIngredient(new Ingredient("Cafea", false, false));
         tiramisu.adaugaIngredient(new Ingredient("Cacao", false, true));
 
-        Restaurant burgerHouse = new Restaurant(
-                "Burger House",
-                new Adresa("Strada Lalelelor", 10, "Bucuresti", "010101"),
-                8,
-                0.10,
-                true
-        );
-        burgerHouse.adaugaProdus(burgerClasic);
-        burgerHouse.adaugaProdus(cartofi);
-        burgerHouse.adaugaProdus(tiramisu);
+        produsRepository.save(burgerClasic);
+        produsRepository.save(cartofi);
+        produsRepository.save(tiramisu);
 
         Ingredient blat = new Ingredient("Blat", false, false);
         Ingredient sosRosii = new Ingredient("Sos rosii", false, false);
@@ -1049,7 +1112,7 @@ public class Main {
         IngredientExtra mozzarellaExtra = new IngredientExtra(new Ingredient("Mozzarella extra", false, false), 4);
         IngredientExtra salamExtra = new IngredientExtra(new Ingredient("Salam extra", false, false), 5);
 
-        Produs pizzaMargherita = new Produs(
+        Produs pizzaMargherita = new Produs(pizzaRoma.getId(),
                 "Pizza Margherita",
                 "Pizza",
                 28,
@@ -1063,7 +1126,7 @@ public class Main {
         pizzaMargherita.adaugaIngredientExtraDisponibil(mozzarellaExtra);
         pizzaMargherita.adaugaIngredientExtraDisponibil(salamExtra);
 
-        Produs limonada = new Produs(
+        Produs limonada = new Produs(pizzaRoma.getId(),
                 "Limonada",
                 "Bautura",
                 12,
@@ -1073,18 +1136,8 @@ public class Main {
         limonada.adaugaIngredient(new Ingredient("Lamaie", false, false));
         limonada.adaugaIngredient(new Ingredient("Gheata", false, true));
 
-        Restaurant pizzaRoma = new Restaurant(
-                "Pizza Roma",
-                new Adresa("Strada Viitorului", 22, "Bucuresti", "020202"),
-                6,
-                0.12,
-                false
-        );
-        pizzaRoma.adaugaProdus(pizzaMargherita);
-        pizzaRoma.adaugaProdus(limonada);
-
-        restaurantService.adaugaRestaurant(burgerHouse);
-        restaurantService.adaugaRestaurant(pizzaRoma);
+        produsRepository.save(pizzaMargherita);
+        produsRepository.save(limonada);
 
         Client client1 = new Client("Ana Popescu", "ana@mail.com", "parola123");
         client1.adaugaAdresa(new Adresa("Strada Florilor", 5, "Bucuresti", "030303"));

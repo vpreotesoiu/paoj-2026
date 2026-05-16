@@ -638,6 +638,111 @@ public class ComandaRepository implements Repository<Comanda, Integer> {
         return null;
     }
 
+    // join pe comenzi, restaurante, soferi, reviewuri
+    public List<String> getDetaliiIstoricComenziClient(int clientId) {
+        String sql = """
+                SELECT c.id AS comanda_id,
+                r.nume AS restaurant_nume,
+                s.nume AS sofer_nume,
+                rv.rating AS review_rating,
+                rv.comentariu AS review_comentariu,
+                c.status AS status
+                FROM comenzi c
+                JOIN restaurante r ON r.id=c.restaurant_id
+                LEFT JOIN soferi s ON s.id=c.sofer_id
+                LEFT JOIN reviewuri rv ON c.id=rv.comanda_id
+                WHERE c.client_id=? AND c.status=?
+                ORDER BY c.id
+                """;
+        List<String> linii = new ArrayList<String>();
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, clientId);
+            ps.setString(2, StatusComanda.FINALIZATA.name());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int idCmd = rs.getInt("comanda_id");
+                    String numeRest = rs.getString("restaurant_nume");
+                    String numeSofer = rs.getString("sofer_nume");
+
+
+                    Integer rating = (Integer) rs.getObject("review_rating");
+                    String comentariu = rs.getString("review_comentariu");
+                    String reviewStr;
+                    if (rating != null) {
+                        reviewStr = "rating: " + rating + ", comentariu: " + comentariu;
+                    }
+                    else {
+                        reviewStr = "nu are review";
+                    }
+
+                    String status = rs.getString("status");
+
+                    String soferStr;
+                    if (numeSofer != null) {
+                        soferStr = numeSofer;
+                    }
+                    else {
+                        soferStr = "nu are sofer";
+                    }
+
+                    String linie = "Comanda nr. " + idCmd + ", restaurant='" + numeRest + "', sofer='" + soferStr + "', status=" + status + ", review={" + reviewStr + "}";
+                    linii.add(linie);
+                }
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException("Eroare la citirea istoricului comenzilor ale clientului: ", e);
+        }
+        return linii;
+    }
+
+    // join pe comenzi, clienti, restaurante, adrese
+    public List<String> getDetaliiComenziDisponibile() {
+        String sql = """
+                SELECT c.id AS comanda_id,
+                cl.nume AS client_nume,
+                r.nume AS restaurant_nume,
+                a.strada AS strada,
+                a.numar AS numar,
+                a.oras AS oras,
+                a.cod_postal AS cod_postal,
+                c.status AS status
+                FROM comenzi c
+                JOIN clienti cl ON cl.id=c.client_id
+                JOIN restaurante r ON r.id=c.restaurant_id
+                JOIN adrese a ON a.id=c.adresa_id
+                WHERE c.status=? AND c.sofer_id IS NULL
+                ORDER BY c.id
+                """;
+
+        List<String> linii = new ArrayList<String>();
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, StatusComanda.NEPRELUATA.name());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int idCmd = rs.getInt("comanda_id");
+                    String numeClient = rs.getString("client_nume");
+                    String numeRest = rs.getString("restaurant_nume");
+                    String strada = rs.getString("strada");
+                    int nr = rs.getInt("numar");
+                    String oras = rs.getString("oras");
+                    String codPostal = rs.getString("cod_postal");
+                    String status = rs.getString("status");
+
+                    String linie = "Comanda nr. " + idCmd + ", client='" + numeClient + "', restaurant='" + numeRest + "', adresa='" + strada + " nr. " + nr + ", " + oras + ", " + codPostal + "', status=" + status;
+                    linii.add(linie);
+                }
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException("Eroare la citirea comenzilor disponibile pt livrare: ", e);
+        }
+        return linii;
+    }
+
     private Comanda buildComanda(ResultSet rs) throws SQLException {
         int idCmd = rs.getInt("id");
         int idClient = rs.getInt("client_id");
